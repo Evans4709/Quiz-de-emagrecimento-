@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Emagrecimento Saudável</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .active {
+            display: block;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+        }
+
+        h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin: 10px 5px;
+            transition: transform 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .question {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .options label {
+            display: block;
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .options label:hover {
+            border-color: #667eea;
+            background: #eef2ff;
+        }
+
+        .options input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .result {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .score {
+            font-size: 3em;
+            color: #667eea;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .feedback {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Tela Inicial -->
+        <div id="start-screen" class="screen active">
+            <h1>🏋️‍♀️ Quiz de Emagrecimento</h1>
+            <p>Descubra se você está no caminho certo para uma vida mais saudável!</p>
+            <button class="btn" onclick="startQuiz()">Começar Quiz</button>
+        </div>
+
+        <!-- Tela do Quiz -->
+        <div id="quiz-screen" class="screen">
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+            <div class="question" id="question"></div>
+            <div class="options" id="options"></div>
+            <button class="btn" onclick="nextQuestion()" id="next-btn">Próxima</button>
+        </div>
+
+        <!-- Tela de Resultados -->
+        <div id="result-screen" class="screen">
+            <div class="result">
+                <h2>Seu Resultado</h2>
+                <div class="score" id="final-score"></div>
+                <div class="feedback" id="feedback"></div>
+                <button class="btn" onclick="restartQuiz()">Fazer Novamente</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Perguntas do quiz
+        const questions = [
+            {
+                question: "Quantas refeições você faz por dia?",
+                options: [
+                    { text: "1-2 refeições", score: 1 },
+                    { text: "3 refeições", score: 2 },
+                    { text: "4-5 refeições", score: 3 },
+                    { text: "6 ou mais refeições", score: 4 }
+                ]
+            },
+            {
+                question: "Qual é sua relação com alimentos processados?",
+                options: [
+                    { text: "Como diariamente", score: 1 },
+                    { text: "Como 3-4 vezes na semana", score: 2 },
+                    { text: "Como 1-2 vezes na semana", score: 3 },
+                    { text: "Raramente ou nunca", score: 4 }
+                ]
+            },
+            {
+                question: "Quantos litros de água bebe por dia?",
+                options: [
+                    { text: "Menos de 1L", score: 1 },
+                    { text: "1-1,5L", score: 2 },
+                    { text: "1,5-2L", score: 3 },
+                    { text: "Mais de 2L", score: 4 }
+                ]
+            },
+            {
+                question: "Com que frequência pratica exercícios?",
+                options: [
+                    { text: "Sedentário", score: 1 },
+                    { text: "1-2 vezes na semana", score: 2 },
+                    { text: "3-4 vezes na semana", score: 3 },
+                    { text: "5+ vezes na semana", score: 4 }
+                ]
+            },
+            {
+                question: "Como está sua qualidade de sono?",
+                options: [
+                    { text: "Menos de 5 horas por noite", score: 1 },
+                    { text: "5-6 horas por noite", score: 2 },
+                    { text: "7-8 horas por noite", score: 3 },
+                    { text: "8+ horas de qualidade", score: 4 }
+                ]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let userAnswers = [];
+
+        function startQuiz() {
+            showScreen('quiz-screen');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const questionElement = document.getElementById('question');
+            const optionsElement = document.getElementById('options');
+            const progressElement = document.getElementById('progress');
+            
+            // Atualizar progresso
+            progressElement.style.width = `${((currentQuestion) / questions.length) * 100}%`;
+            
+            // Carregar pergunta
+            questionElement.textContent = questions[currentQuestion].question;
+            
+            // Carregar opções
+            optionsElement.innerHTML = '';
+            questions[currentQuestion].options.forEach((option, index) => {
+                optionsElement.innerHTML += `
+                    <label>
+                        <input type="radio" name="answer" value="${index}">
+                        ${option.text}
+                    </label>
+                `;
+            });
+        }
+
+        function nextQuestion() {
+            const selectedOption = document.querySelector('input[name="answer"]:checked');
+            
+            if (!selectedOption) {
+                alert('Por favor, selecione uma resposta!');
+                return;
+            }
+
+            // Salvar resposta e pontuação
+            const answerIndex = parseInt(selectedOption.value);
+            userAnswers.push({
+                question: questions[currentQuestion].question,
+                answer: questions[currentQuestion].options[answerIndex].text,
+                score: questions[currentQuestion].options[answerIndex].score
+            });
+
+            score += questions[currentQuestion].options[answerIndex].score;
+
+            // Próxima pergunta ou resultados
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            showScreen('result-screen');
+            
+            const maxScore = questions.length * 4;
+            const percentage = (score / maxScore) * 100;
+            
+            document.getElementById('final-score').textContent = `${score}/${maxScore}`;
+            
+            let feedback = '';
+            if (percentage >= 80) {
+                feedback = "🎉 Excelente! Você tem hábitos muito saudáveis!";
+            } else if (percentage >= 60) {
+                feedback = "👍 Bom trabalho! Continue melhorando!";
+            } else if (percentage >= 40) {
+                feedback = "💪 Há espaço para melhorias. Vamos trabalhar nisso!";
+            } else {
+                feedback = "🔔 Precisa de mais atenção aos hábitos. Não desista!";
+            }
+            
+            feedback += "<br><br><strong>Dicas para melhorar:</strong><br>";
+            feedback += "• Beba mais água durante o dia<br>";
+            feedback += "• Priorize alimentos naturais<br>";
+            feedback += "• Mantenha uma rotina de exercícios<br>";
+            feedback += "• Durma bem e controle o estresse";
+            
+            document.getElementById('feedback').innerHTML = feedback;
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            userAnswers = [];
+            showScreen('start-screen');
+        }
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Emagrecimento Saudável</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .active {
+            display: block;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+        }
+
+        h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin: 10px 5px;
+            transition: transform 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .question {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .options label {
+            display: block;
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .options label:hover {
+            border-color: #667eea;
+            background: #eef2ff;
+        }
+
+        .options input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .result {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .score {
+            font-size: 3em;
+            color: #667eea;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .feedback {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Tela Inicial -->
+        <div id="start-screen" class="screen active">
+            <h1>🏋️‍♀️ Quiz de Emagrecimento</h1>
+            <p>Descubra se você está no caminho certo para uma vida mais saudável!</p>
+            <button class="btn" onclick="startQuiz()">Começar Quiz</button>
+        </div>
+
+        <!-- Tela do Quiz -->
+        <div id="quiz-screen" class="screen">
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+            <div class="question" id="question"></div>
+            <div class="options" id="options"></div>
+            <button class="btn" onclick="nextQuestion()" id="next-btn">Próxima</button>
+        </div>
+
+        <!-- Tela de Resultados -->
+        <div id="result-screen" class="screen">
+            <div class="result">
+                <h2>Seu Resultado</h2>
+                <div class="score" id="final-score"></div>
+                <div class="feedback" id="feedback"></div>
+                <button class="btn" onclick="restartQuiz()">Fazer Novamente</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Perguntas do quiz
+        const questions = [
+            {
+                question: "Quantas refeições você faz por dia?",
+                options: [
+                    { text: "1-2 refeições", score: 1 },
+                    { text: "3 refeições", score: 2 },
+                    { text: "4-5 refeições", score: 3 },
+                    { text: "6 ou mais refeições", score: 4 }
+                ]
+            },
+            {
+                question: "Qual é sua relação com alimentos processados?",
+                options: [
+                    { text: "Como diariamente", score: 1 },
+                    { text: "Como 3-4 vezes na semana", score: 2 },
+                    { text: "Como 1-2 vezes na semana", score: 3 },
+                    { text: "Raramente ou nunca", score: 4 }
+                ]
+            },
+            {
+                question: "Quantos litros de água bebe por dia?",
+                options: [
+                    { text: "Menos de 1L", score: 1 },
+                    { text: "1-1,5L", score: 2 },
+                    { text: "1,5-2L", score: 3 },
+                    { text: "Mais de 2L", score: 4 }
+                ]
+            },
+            {
+                question: "Com que frequência pratica exercícios?",
+                options: [
+                    { text: "Sedentário", score: 1 },
+                    { text: "1-2 vezes na semana", score: 2 },
+                    { text: "3-4 vezes na semana", score: 3 },
+                    { text: "5+ vezes na semana", score: 4 }
+                ]
+            },
+            {
+                question: "Como está sua qualidade de sono?",
+                options: [
+                    { text: "Menos de 5 horas por noite", score: 1 },
+                    { text: "5-6 horas por noite", score: 2 },
+                    { text: "7-8 horas por noite", score: 3 },
+                    { text: "8+ horas de qualidade", score: 4 }
+                ]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let userAnswers = [];
+
+        function startQuiz() {
+            showScreen('quiz-screen');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const questionElement = document.getElementById('question');
+            const optionsElement = document.getElementById('options');
+            const progressElement = document.getElementById('progress');
+            
+            // Atualizar progresso
+            progressElement.style.width = `${((currentQuestion) / questions.length) * 100}%`;
+            
+            // Carregar pergunta
+            questionElement.textContent = questions[currentQuestion].question;
+            
+            // Carregar opções
+            optionsElement.innerHTML = '';
+            questions[currentQuestion].options.forEach((option, index) => {
+                optionsElement.innerHTML += `
+                    <label>
+                        <input type="radio" name="answer" value="${index}">
+                        ${option.text}
+                    </label>
+                `;
+            });
+        }
+
+        function nextQuestion() {
+            const selectedOption = document.querySelector('input[name="answer"]:checked');
+            
+            if (!selectedOption) {
+                alert('Por favor, selecione uma resposta!');
+                return;
+            }
+
+            // Salvar resposta e pontuação
+            const answerIndex = parseInt(selectedOption.value);
+            userAnswers.push({
+                question: questions[currentQuestion].question,
+                answer: questions[currentQuestion].options[answerIndex].text,
+                score: questions[currentQuestion].options[answerIndex].score
+            });
+
+            score += questions[currentQuestion].options[answerIndex].score;
+
+            // Próxima pergunta ou resultados
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            showScreen('result-screen');
+            
+            const maxScore = questions.length * 4;
+            const percentage = (score / maxScore) * 100;
+            
+            document.getElementById('final-score').textContent = `${score}/${maxScore}`;
+            
+            let feedback = '';
+            if (percentage >= 80) {
+                feedback = "🎉 Excelente! Você tem hábitos muito saudáveis!";
+            } else if (percentage >= 60) {
+                feedback = "👍 Bom trabalho! Continue melhorando!";
+            } else if (percentage >= 40) {
+                feedback = "💪 Há espaço para melhorias. Vamos trabalhar nisso!";
+            } else {
+                feedback = "🔔 Precisa de mais atenção aos hábitos. Não desista!";
+            }
+            
+            feedback += "<br><br><strong>Dicas para melhorar:</strong><br>";
+            feedback += "• Beba mais água durante o dia<br>";
+            feedback += "• Priorize alimentos naturais<br>";
+            feedback += "• Mantenha uma rotina de exercícios<br>";
+            feedback += "• Durma bem e controle o estresse";
+            
+            document.getElementById('feedback').innerHTML = feedback;
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            userAnswers = [];
+            showScreen('start-screen');
+        }
+    </script>
+</body>
+</html>

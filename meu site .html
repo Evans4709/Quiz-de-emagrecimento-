@@ -1,738 +1,621 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout M-Pesa</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Quiz Emagrecimento Saudável</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        :root {
-            --primary: #00A650;
-            --primary-dark: #008c43;
-            --secondary: #FFC107;
-            --dark: #333;
-            --light: #f8f9fa;
-            --gray: #6c757d;
-            --danger: #dc3545;
-            --success: #28a745;
-            --border-radius: 12px;
-            --box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            --transition: all 0.3s ease;
+            font-family: 'Arial', sans-serif;
         }
 
         body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
         }
 
         .container {
-            display: flex;
-            max-width: 1000px;
-            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
             background: white;
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            box-shadow: var(--box-shadow);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
 
-        .illustration {
-            flex: 1;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            color: white;
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-        }
-
-        .illustration img {
-            max-width: 200px;
-            margin-bottom: 20px;
-        }
-
-        .illustration h2 {
-            font-size: 28px;
-            margin-bottom: 15px;
-        }
-
-        .illustration p {
-            font-size: 16px;
-            opacity: 0.9;
-            line-height: 1.6;
-        }
-
-        .features {
-            margin-top: 30px;
-            width: 100%;
-        }
-
-        .feature {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-            font-size: 14px;
-        }
-
-        .feature i {
-            margin-right: 10px;
-            font-size: 18px;
-            color: var(--secondary);
-        }
-
-        .checkout {
-            flex: 1;
-            padding: 40px;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .logo i {
-            font-size: 32px;
-            color: var(--primary);
-            margin-right: 10px;
-        }
-
-        .logo h1 {
-            font-size: 24px;
-            color: var(--dark);
-        }
-
-        .progress-bar {
-            display: flex;
-            margin-bottom: 30px;
-            position: relative;
-        }
-
-        .progress-bar::before {
-            content: '';
-            position: absolute;
-            top: 15px;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: #e9ecef;
-            z-index: 1;
-        }
-
-        .progress-step {
-            flex: 1;
-            text-align: center;
-            position: relative;
-            z-index: 2;
-        }
-
-        .step-circle {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            background: #e9ecef;
-            color: var(--gray);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 8px;
-            font-weight: bold;
-            transition: var(--transition);
-        }
-
-        .step-circle.active {
-            background: var(--primary);
-            color: white;
-        }
-
-        .step-text {
-            font-size: 12px;
-            color: var(--gray);
-            transition: var(--transition);
-        }
-
-        .step-text.active {
-            color: var(--primary);
-            font-weight: 600;
-        }
-
-        .form-container {
-            margin-bottom: 20px;
-        }
-
-        .form-step {
+        .screen {
             display: none;
-            animation: fadeIn 0.5s ease;
         }
 
-        .form-step.active {
+        .active {
             display: block;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .form-group {
+        h1 {
+            color: #333;
+            text-align: center;
             margin-bottom: 20px;
+            font-size: 2.5em;
         }
 
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--dark);
-        }
-
-        input, select {
-            width: 100%;
-            padding: 14px;
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: var(--transition);
-        }
-
-        input:focus, select:focus {
-            border-color: var(--primary);
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(0, 166, 80, 0.1);
-        }
-
-        .amount-options {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .amount-option {
-            padding: 12px;
-            text-align: center;
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .amount-option:hover {
-            border-color: var(--primary);
-        }
-
-        .amount-option.selected {
-            border-color: var(--primary);
-            background: rgba(0, 166, 80, 0.1);
-        }
-
-        .amount-option .value {
-            font-weight: bold;
-            font-size: 18px;
-            color: var(--dark);
-        }
-
-        .amount-option .label {
-            font-size: 12px;
-            color: var(--gray);
-        }
-
-        .custom-amount {
-            margin-top: 15px;
-        }
-
-        .instructions {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
-            font-size: 14px;
-            line-height: 1.5;
-        }
-
-        .instructions ol {
-            margin-left: 20px;
-            margin-top: 10px;
-        }
-
-        .instructions li {
-            margin-bottom: 8px;
-        }
-
-        .recipient-info {
-            background: #e8f5e8;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
-            text-align: center;
-            font-weight: 600;
-        }
-
-        .recipient-number {
-            font-size: 18px;
-            color: var(--primary);
-            margin-top: 5px;
-        }
-
-        .btn-group {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 30px;
+        h2 {
+            color: #667eea;
+            margin-bottom: 15px;
         }
 
         .btn {
-            padding: 14px 30px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .btn i {
-            margin-right: 8px;
-        }
-
-        .btn-prev {
-            background: #f8f9fa;
-            color: var(--dark);
-        }
-
-        .btn-prev:hover {
-            background: #e9ecef;
-        }
-
-        .btn-next, .btn-submit {
-            background: var(--primary);
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin: 10px 5px;
+            transition: transform 0.3s;
         }
 
-        .btn-next:hover, .btn-submit:hover {
-            background: var(--primary-dark);
+        .btn:hover {
+            transform: translateY(-2px);
         }
 
-        .btn:disabled {
-            background: #e9ecef;
-            color: var(--gray);
-            cursor: not-allowed;
-        }
-
-        .success-container {
-            text-align: center;
-            padding: 30px 0;
-            display: none;
-        }
-
-        .success-icon {
-            font-size: 64px;
-            color: var(--success);
+        .question {
+            font-size: 1.3em;
             margin-bottom: 20px;
+            color: #333;
+            font-weight: bold;
         }
 
-        .success-container h2 {
-            color: var(--success);
-            margin-bottom: 15px;
+        .options label {
+            display: block;
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s;
         }
 
-        .transaction-details {
+        .options label:hover {
+            border-color: #667eea;
+            background: #eef2ff;
+        }
+
+        .options input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .result {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .score {
+            font-size: 3em;
+            color: #667eea;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .feedback {
             background: #f8f9fa;
             padding: 20px;
-            border-radius: 8px;
+            border-radius: 10px;
             margin: 20px 0;
             text-align: left;
-        }
-
-        .detail-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .detail-row:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-
-        .error-message {
-            color: var(--danger);
-            font-size: 14px;
-            margin-top: 5px;
-            display: none;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-            }
-            
-            .illustration {
-                padding: 30px 20px;
-            }
-            
-            .checkout {
-                padding: 30px 20px;
-            }
-            
-            .amount-options {
-                grid-template-columns: repeat(2, 1fr);
-            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="illustration">
-            <i class="fas fa-mobile-alt fa-5x"></i>
-            <h2>Pagamento Rápido e Seguro</h2>
-            <p>Utilize o M-Pesa para finalizar sua compra de forma simples e segura.</p>
-            
-            <div class="features">
-                <div class="feature">
-                    <i class="fas fa-shield-alt"></i>
-                    <span>Transações 100% seguras</span>
-                </div>
-                <div class="feature">
-                    <i class="fas fa-bolt"></i>
-                    <span>Processamento instantâneo</span>
-                </div>
-                <div class="feature">
-                    <i class="fas fa-headset"></i>
-                    <span>Suporte 24/7</span>
-                </div>
-            </div>
+        <!-- Tela Inicial -->
+        <div id="start-screen" class="screen active">
+            <h1>🏋️‍♀️ Quiz de Emagrecimento</h1>
+            <p>Descubra se você está no caminho certo para uma vida mais saudável!</p>
+            <button class="btn" onclick="startQuiz()">Começar Quiz</button>
         </div>
-        
-        <div class="checkout">
-            <div class="logo">
-                <i class="fas fa-wallet"></i>
-                <h1>Checkout M-Pesa</h1>
-            </div>
-            
+
+        <!-- Tela do Quiz -->
+        <div id="quiz-screen" class="screen">
             <div class="progress-bar">
-                <div class="progress-step">
-                    <div class="step-circle active">1</div>
-                    <div class="step-text active">Valor</div>
-                </div>
-                <div class="progress-step">
-                    <div class="step-circle">2</div>
-                    <div class="step-text">Pagamento</div>
-                </div>
-                <div class="progress-step">
-                    <div class="step-circle">3</div>
-                    <div class="step-text">Confirmação</div>
-                </div>
+                <div class="progress" id="progress"></div>
             </div>
-            
-            <div class="form-container">
-                <!-- Step 1: Amount Selection -->
-                <div class="form-step active" id="step1">
-                    <div class="form-group">
-                        <label>Selecione o valor a pagar</label>
-                        <div class="amount-options">
-                            <div class="amount-option" data-value="100">
-                                <div class="value">100 MZN</div>
-                                <div class="label">Básico</div>
-                            </div>
-                            <div class="amount-option" data-value="250">
-                                <div class="value">250 MZN</div>
-                                <div class="label">Standard</div>
-                            </div>
-                            <div class="amount-option selected" data-value="500">
-                                <div class="value">500 MZN</div>
-                                <div class="label">Recomendado</div>
-                            </div>
-                            <div class="amount-option" data-value="750">
-                                <div class="value">750 MZN</div>
-                                <div class="label">Premium</div>
-                            </div>
-                            <div class="amount-option" data-value="1000">
-                                <div class="value">1000 MZN</div>
-                                <div class="label">VIP</div>
-                            </div>
-                            <div class="amount-option" data-value="custom">
-                                <div class="value">Outro</div>
-                                <div class="label">Personalizar</div>
-                            </div>
-                        </div>
-                        
-                        <div class="custom-amount" id="customAmountContainer" style="display: none;">
-                            <label for="customAmount">Valor personalizado (MZN)</label>
-                            <input type="number" id="customAmount" min="10" max="10000" placeholder="Digite o valor">
-                            <div class="error-message" id="customAmountError"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="btn-group">
-                        <button class="btn btn-prev" disabled>
-                            <i class="fas fa-arrow-left"></i> Anterior
-                        </button>
-                        <button class="btn btn-next" id="nextToStep2">
-                            Próximo <i class="fas fa-arrow-right"></i>
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Step 2: Payment Details -->
-                <div class="form-step" id="step2">
-                    <div class="form-group">
-                        <label for="phoneNumber">Número M-Pesa</label>
-                        <input type="tel" id="phoneNumber" placeholder="84 XXX XXXX" required>
-                        <div class="error-message" id="phoneError"></div>
-                    </div>
-                    
-                    <div class="recipient-info">
-                        <div>Enviar para o número:</div>
-                        <div class="recipient-number">846738314</div>
-                    </div>
-                    
-                    <div class="instructions">
-                        <p><strong>Instruções para pagamento:</strong></p>
-                        <ol>
-                            <li>Digite seu número M-Pesa acima</li>
-                            <li>Clique em "Processar Pagamento"</li>
-                            <li>Será gerado um pedido de pagamento</li>
-                            <li>Confirme o pagamento no seu telefone</li>
-                            <li>Envie o valor para o número indicado</li>
-                        </ol>
-                    </div>
-                    
-                    <div class="btn-group">
-                        <button class="btn btn-prev" id="prevToStep1">
-                            <i class="fas fa-arrow-left"></i> Anterior
-                        </button>
-                        <button class="btn btn-submit" id="processPayment">
-                            <i class="fas fa-lock"></i> Processar Pagamento
-                        </button>
-                    </div>
-                </div>
-                
-                <!-- Step 3: Success -->
-                <div class="success-container" id="step3">
-                    <div class="success-icon">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <h2>Pagamento Processado com Sucesso!</h2>
-                    <p>O seu pagamento foi enviado para confirmação.</p>
-                    
-                    <div class="transaction-details">
-                        <div class="detail-row">
-                            <span>Valor:</span>
-                            <span id="successAmount">500 MZN</span>
-                        </div>
-                        <div class="detail-row">
-                            <span>Número:</span>
-                            <span id="successPhone">84 XXX XXXX</span>
-                        </div>
-                        <div class="detail-row">
-                            <span>Destinatário:</span>
-                            <span>846738314</span>
-                        </div>
-                        <div class="detail-row">
-                            <span>Referência:</span>
-                            <span id="transactionRef">MP-2023-XXXXX</span>
-                        </div>
-                        <div class="detail-row">
-                            <span>Data/Hora:</span>
-                            <span id="transactionDate">--/--/---- --:--</span>
-                        </div>
-                    </div>
-                    
-                    <p>Verifique o seu telefone para confirmar a transação.</p>
-                    <button class="btn btn-submit" id="newPayment" style="margin-top: 20px;">
-                        <i class="fas fa-redo"></i> Novo Pagamento
-                    </button>
-                </div>
+            <div class="question" id="question"></div>
+            <div class="options" id="options"></div>
+            <button class="btn" onclick="nextQuestion()" id="next-btn">Próxima</button>
+        </div>
+
+        <!-- Tela de Resultados -->
+        <div id="result-screen" class="screen">
+            <div class="result">
+                <h2>Seu Resultado</h2>
+                <div class="score" id="final-score"></div>
+                <div class="feedback" id="feedback"></div>
+                <button class="btn" onclick="restartQuiz()">Fazer Novamente</button>
             </div>
         </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Elements
-            const step1 = document.getElementById('step1');
-            const step2 = document.getElementById('step2');
-            const step3 = document.getElementById('step3');
-            const nextToStep2 = document.getElementById('nextToStep2');
-            const prevToStep1 = document.getElementById('prevToStep1');
-            const processPayment = document.getElementById('processPayment');
-            const newPayment = document.getElementById('newPayment');
-            const amountOptions = document.querySelectorAll('.amount-option');
-            const customAmountContainer = document.getElementById('customAmountContainer');
-            const customAmount = document.getElementById('customAmount');
-            const customAmountError = document.getElementById('customAmountError');
-            const phoneNumber = document.getElementById('phoneNumber');
-            const phoneError = document.getElementById('phoneError');
-            const successAmount = document.getElementById('successAmount');
-            const successPhone = document.getElementById('successPhone');
-            const transactionRef = document.getElementById('transactionRef');
-            const transactionDate = document.getElementById('transactionDate');
+        // Perguntas do quiz
+        const questions = [
+            {
+                question: "Quantas refeições você faz por dia?",
+                options: [
+                    { text: "1-2 refeições", score: 1 },
+                    { text: "3 refeições", score: 2 },
+                    { text: "4-5 refeições", score: 3 },
+                    { text: "6 ou mais refeições", score: 4 }
+                ]
+            },
+            {
+                question: "Qual é sua relação com alimentos processados?",
+                options: [
+                    { text: "Como diariamente", score: 1 },
+                    { text: "Como 3-4 vezes na semana", score: 2 },
+                    { text: "Como 1-2 vezes na semana", score: 3 },
+                    { text: "Raramente ou nunca", score: 4 }
+                ]
+            },
+            {
+                question: "Quantos litros de água bebe por dia?",
+                options: [
+                    { text: "Menos de 1L", score: 1 },
+                    { text: "1-1,5L", score: 2 },
+                    { text: "1,5-2L", score: 3 },
+                    { text: "Mais de 2L", score: 4 }
+                ]
+            },
+            {
+                question: "Com que frequência pratica exercícios?",
+                options: [
+                    { text: "Sedentário", score: 1 },
+                    { text: "1-2 vezes na semana", score: 2 },
+                    { text: "3-4 vezes na semana", score: 3 },
+                    { text: "5+ vezes na semana", score: 4 }
+                ]
+            },
+            {
+                question: "Como está sua qualidade de sono?",
+                options: [
+                    { text: "Menos de 5 horas por noite", score: 1 },
+                    { text: "5-6 horas por noite", score: 2 },
+                    { text: "7-8 horas por noite", score: 3 },
+                    { text: "8+ horas de qualidade", score: 4 }
+                ]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let userAnswers = [];
+
+        function startQuiz() {
+            showScreen('quiz-screen');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const questionElement = document.getElementById('question');
+            const optionsElement = document.getElementById('options');
+            const progressElement = document.getElementById('progress');
             
-            // Progress steps
-            const stepCircles = document.querySelectorAll('.step-circle');
-            const stepTexts = document.querySelectorAll('.step-text');
+            // Atualizar progresso
+            progressElement.style.width = `${((currentQuestion) / questions.length) * 100}%`;
             
-            // State
-            let selectedAmount = 500;
-            let isCustomAmount = false;
+            // Carregar pergunta
+            questionElement.textContent = questions[currentQuestion].question;
             
-            // Amount selection
-            amountOptions.forEach(option => {
-                option.addEventListener('click', function() {
-                    // Remove selected class from all options
-                    amountOptions.forEach(opt => opt.classList.remove('selected'));
-                    
-                    // Add selected class to clicked option
-                    this.classList.add('selected');
-                    
-                    const value = this.getAttribute('data-value');
-                    
-                    if (value === 'custom') {
-                        isCustomAmount = true;
-                        customAmountContainer.style.display = 'block';
-                        customAmount.focus();
-                    } else {
-                        isCustomAmount = false;
-                        customAmountContainer.style.display = 'none';
-                        selectedAmount = parseInt(value);
-                    }
-                });
+            // Carregar opções
+            optionsElement.innerHTML = '';
+            questions[currentQuestion].options.forEach((option, index) => {
+                optionsElement.innerHTML += `
+                    <label>
+                        <input type="radio" name="answer" value="${index}">
+                        ${option.text}
+                    </label>
+                `;
             });
+        }
+
+        function nextQuestion() {
+            const selectedOption = document.querySelector('input[name="answer"]:checked');
             
-            // Custom amount validation
-            customAmount.addEventListener('input', function() {
-                const value = parseInt(this.value);
-                
-                if (isNaN(value) || value < 10 || value > 10000) {
-                    customAmountError.textContent = 'O valor deve estar entre 10 e 10000 MZN';
-                    customAmountError.style.display = 'block';
-                    selectedAmount = 0;
-                } else {
-                    customAmountError.style.display = 'none';
-                    selectedAmount = value;
-                }
+            if (!selectedOption) {
+                alert('Por favor, selecione uma resposta!');
+                return;
+            }
+
+            // Salvar resposta e pontuação
+            const answerIndex = parseInt(selectedOption.value);
+            userAnswers.push({
+                question: questions[currentQuestion].question,
+                answer: questions[currentQuestion].options[answerIndex].text,
+                score: questions[currentQuestion].options[answerIndex].score
             });
+
+            score += questions[currentQuestion].options[answerIndex].score;
+
+            // Próxima pergunta ou resultados
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            showScreen('result-screen');
             
-            // Phone number formatting
-            phoneNumber.addEventListener('input', function(e) {
-                let value = e.target.value.replace(/\D/g, '');
-                if (value.length > 9) value = value.substring(0, 9);
-                
-                if (value.length > 0) {
-                    value = value.replace(/(\d{2})(\d{3})(\d{3})/, '$1 $2 $3');
-                }
-                
-                e.target.value = value;
-            });
+            const maxScore = questions.length * 4;
+            const percentage = (score / maxScore) * 100;
             
-            // Navigation
-            nextToStep2.addEventListener('click', function() {
-                if (selectedAmount === 0 || (isCustomAmount && !customAmount.value)) {
-                    alert('Por favor, selecione ou insira um valor válido');
-                    return;
-                }
-                
-                // Update progress bar
-                stepCircles[0].classList.remove('active');
-                stepCircles[1].classList.add('active');
-                stepTexts[0].classList.remove('active');
-                stepTexts[1].classList.add('active');
-                
-                // Show step 2, hide step 1
-                step1.classList.remove('active');
-                step2.classList.add('active');
-            });
+            document.getElementById('final-score').textContent = `${score}/${maxScore}`;
             
-            prevToStep1.addEventListener('click', function() {
-                // Update progress bar
-                stepCircles[1].classList.remove('active');
-                stepCircles[0].classList.add('active');
-                stepTexts[1].classList.remove('active');
-                stepTexts[0].classList.add('active');
-                
-                // Show step 1, hide step 2
-                step2.classList.remove('active');
-                step1.classList.add('active');
-            });
+            let feedback = '';
+            if (percentage >= 80) {
+                feedback = "🎉 Excelente! Você tem hábitos muito saudáveis!";
+            } else if (percentage >= 60) {
+                feedback = "👍 Bom trabalho! Continue melhorando!";
+            } else if (percentage >= 40) {
+                feedback = "💪 Há espaço para melhorias. Vamos trabalhar nisso!";
+            } else {
+                feedback = "🔔 Precisa de mais atenção aos hábitos. Não desista!";
+            }
             
-            // Process payment
-            processPayment.addEventListener('click', function() {
-                const phoneValue = phoneNumber.value.replace(/\s/g, '');
-                const phoneRegex = /^8[4-7][0-9]{7}$/;
-                
-                if (!phoneRegex.test(phoneValue)) {
-                    phoneError.textContent = 'Por favor, insira um número de telefone válido (ex: 84XXXXXXX)';
-                    phoneError.style.display = 'block';
-                    return;
-                }
-                
-                phoneError.style.display = 'none';
-                
-                // Disable button and show processing
-                this.disabled = true;
-                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processando...';
-                
-                // Simulate API call
-                setTimeout(() => {
-                    // Update progress bar
-                    stepCircles[1].classList.remove('active');
-                    stepCircles[2].classList.add('active');
-                    stepTexts[1].classList.remove('active');
-                    stepTexts[2].classList.add('active');
-                    
-                    // Hide step 2, show success
-                    step2.classList.remove('active');
-                    step3.style.display = 'block';
-                    
-                    // Update success details
-                    successAmount.textContent = selectedAmount + ' MZN';
-                    successPhone.textContent = phoneNumber.value;
-                    transactionRef.textContent = 'MP-' + new Date().getFullYear() + '-' + Math.floor(10000 + Math.random() * 90000);
-                    transactionDate.textContent = new Date().toLocaleString('pt-PT');
-                }, 2000);
-            });
+            feedback += "<br><br><strong>Dicas para melhorar:</strong><br>";
+            feedback += "• Beba mais água durante o dia<br>";
+            feedback += "• Priorize alimentos naturais<br>";
+            feedback += "• Mantenha uma rotina de exercícios<br>";
+            feedback += "• Durma bem e controle o estresse";
             
-            // New payment
-            newPayment.addEventListener('click', function() {
-                // Reset form
-                step3.style.display = 'none';
-                step1.classList.add('active');
-                
-                // Reset progress bar
-                stepCircles[2].classList.remove('active');
-                stepCircles[0].classList.add('active');
-                stepTexts[2].classList.remove('active');
-                stepTexts[0].classList.add('active');
-                
-                // Reset form values
-                amountOptions.forEach(opt => opt.classList.remove('selected'));
-                document.querySelector('.amount-option[data-value="500"]').classList.add('selected');
-                customAmountContainer.style.display = 'none';
-                customAmount.value = '';
-                phoneNumber.value = '';
-                
-                // Reset button
-                processPayment.disabled = false;
-                processPayment.innerHTML = '<i class="fas fa-lock"></i> Processar Pagamento';
+            document.getElementById('feedback').innerHTML = feedback;
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
             });
-        });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            userAnswers = [];
+            showScreen('start-screen');
+        }
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Emagrecimento Saudável</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .active {
+            display: block;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+        }
+
+        h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin: 10px 5px;
+            transition: transform 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .question {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .options label {
+            display: block;
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .options label:hover {
+            border-color: #667eea;
+            background: #eef2ff;
+        }
+
+        .options input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .result {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .score {
+            font-size: 3em;
+            color: #667eea;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .feedback {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Tela Inicial -->
+        <div id="start-screen" class="screen active">
+            <h1>🏋️‍♀️ Quiz de Emagrecimento</h1>
+            <p>Descubra se você está no caminho certo para uma vida mais saudável!</p>
+            <button class="btn" onclick="startQuiz()">Começar Quiz</button>
+        </div>
+
+        <!-- Tela do Quiz -->
+        <div id="quiz-screen" class="screen">
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+            <div class="question" id="question"></div>
+            <div class="options" id="options"></div>
+            <button class="btn" onclick="nextQuestion()" id="next-btn">Próxima</button>
+        </div>
+
+        <!-- Tela de Resultados -->
+        <div id="result-screen" class="screen">
+            <div class="result">
+                <h2>Seu Resultado</h2>
+                <div class="score" id="final-score"></div>
+                <div class="feedback" id="feedback"></div>
+                <button class="btn" onclick="restartQuiz()">Fazer Novamente</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Perguntas do quiz
+        const questions = [
+            {
+                question: "Quantas refeições você faz por dia?",
+                options: [
+                    { text: "1-2 refeições", score: 1 },
+                    { text: "3 refeições", score: 2 },
+                    { text: "4-5 refeições", score: 3 },
+                    { text: "6 ou mais refeições", score: 4 }
+                ]
+            },
+            {
+                question: "Qual é sua relação com alimentos processados?",
+                options: [
+                    { text: "Como diariamente", score: 1 },
+                    { text: "Como 3-4 vezes na semana", score: 2 },
+                    { text: "Como 1-2 vezes na semana", score: 3 },
+                    { text: "Raramente ou nunca", score: 4 }
+                ]
+            },
+            {
+                question: "Quantos litros de água bebe por dia?",
+                options: [
+                    { text: "Menos de 1L", score: 1 },
+                    { text: "1-1,5L", score: 2 },
+                    { text: "1,5-2L", score: 3 },
+                    { text: "Mais de 2L", score: 4 }
+                ]
+            },
+            {
+                question: "Com que frequência pratica exercícios?",
+                options: [
+                    { text: "Sedentário", score: 1 },
+                    { text: "1-2 vezes na semana", score: 2 },
+                    { text: "3-4 vezes na semana", score: 3 },
+                    { text: "5+ vezes na semana", score: 4 }
+                ]
+            },
+            {
+                question: "Como está sua qualidade de sono?",
+                options: [
+                    { text: "Menos de 5 horas por noite", score: 1 },
+                    { text: "5-6 horas por noite", score: 2 },
+                    { text: "7-8 horas por noite", score: 3 },
+                    { text: "8+ horas de qualidade", score: 4 }
+                ]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let userAnswers = [];
+
+        function startQuiz() {
+            showScreen('quiz-screen');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const questionElement = document.getElementById('question');
+            const optionsElement = document.getElementById('options');
+            const progressElement = document.getElementById('progress');
+            
+            // Atualizar progresso
+            progressElement.style.width = `${((currentQuestion) / questions.length) * 100}%`;
+            
+            // Carregar pergunta
+            questionElement.textContent = questions[currentQuestion].question;
+            
+            // Carregar opções
+            optionsElement.innerHTML = '';
+            questions[currentQuestion].options.forEach((option, index) => {
+                optionsElement.innerHTML += `
+                    <label>
+                        <input type="radio" name="answer" value="${index}">
+                        ${option.text}
+                    </label>
+                `;
+            });
+        }
+
+        function nextQuestion() {
+            const selectedOption = document.querySelector('input[name="answer"]:checked');
+            
+            if (!selectedOption) {
+                alert('Por favor, selecione uma resposta!');
+                return;
+            }
+
+            // Salvar resposta e pontuação
+            const answerIndex = parseInt(selectedOption.value);
+            userAnswers.push({
+                question: questions[currentQuestion].question,
+                answer: questions[currentQuestion].options[answerIndex].text,
+                score: questions[currentQuestion].options[answerIndex].score
+            });
+
+            score += questions[currentQuestion].options[answerIndex].score;
+
+            // Próxima pergunta ou resultados
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            showScreen('result-screen');
+            
+            const maxScore = questions.length * 4;
+            const percentage = (score / maxScore) * 100;
+            
+            document.getElementById('final-score').textContent = `${score}/${maxScore}`;
+            
+            let feedback = '';
+            if (percentage >= 80) {
+                feedback = "🎉 Excelente! Você tem hábitos muito saudáveis!";
+            } else if (percentage >= 60) {
+                feedback = "👍 Bom trabalho! Continue melhorando!";
+            } else if (percentage >= 40) {
+                feedback = "💪 Há espaço para melhorias. Vamos trabalhar nisso!";
+            } else {
+                feedback = "🔔 Precisa de mais atenção aos hábitos. Não desista!";
+            }
+            
+            feedback += "<br><br><strong>Dicas para melhorar:</strong><br>";
+            feedback += "• Beba mais água durante o dia<br>";
+            feedback += "• Priorize alimentos naturais<br>";
+            feedback += "• Mantenha uma rotina de exercícios<br>";
+            feedback += "• Durma bem e controle o estresse";
+            
+            document.getElementById('feedback').innerHTML = feedback;
+        }
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            userAnswers = [];
+            showScreen('start-screen');
+        }
     </script>
 </body>
 </html>
